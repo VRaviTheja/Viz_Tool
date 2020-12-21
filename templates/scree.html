@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">	  
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>	
+	  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	  <link rel = "stylesheet" href = "{{ url_for('static',filename = 'css/d3style.css')}}">
+</head>
+  
+<body id = "ibody">
+	<link rel = "stylesheet" href = "{{ url_for('static',filename = 'css/d3style.css')}}">
+	<!-- Add 2 buttons -->	
+	<div class="myheader">
+		<img src="static/pic.jpg" alt="mylogo">
+		<h1 style= >Housing Visual Analytics</h1>
+	</div>
+	
+	<a href = "{{url_for('mds')}}">MDS Plots</a>&nbsp;&nbsp;&nbsp;	
+	<a href = "{{url_for('pca')}}">PCA Plots</a>&nbsp;&nbsp;&nbsp;
+	<a href = "{{url_for('matrix')}}">Scatter Plot Matrxix Plots</a>&nbsp;&nbsp;&nbsp;
+	
+	<select id = "options" class = dropdown name= dropdown method="GET" action="/" onchange = "plotScree(this.value)">
+		{% for option in dropdown %}
+		<option value= "{{option}}" SELECTED>{{option}}</option>"
+		{% endfor %}
+	</select>
+
+	
+
+	
+	<div id="screeplot"></div>
+	
+	<script type="text/javascript" src="{{ url_for('static',filename = 'screeplot.js') }}"></script> 
+</body>
+</html>

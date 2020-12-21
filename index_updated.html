@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">	  
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>	
+	  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	  <link rel = "stylesheet" href = "{{ url_for('static',filename = 'css/d3style.css')}}">
+	  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.95.1/css/materialize.min.css">
+	  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	  <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.95.1/js/materialize.min.js"></script>
+</head>
+  
+<body id = "ibody">
+
+<script>
+var dict = {{d|tojson}}['stories']
+var dict_2 = {{d|tojson}}['variables']
+var story_json = {{d|tojson}}['jsons']
+
+console.log("Started Stories");
+console.log(story_json);
+console.log("Variables Dict");
+console.log(dict_2);
+
+var Num_slides = dict.length
+var each_slide_length = 3  
+console.log(Num_slides * 3)
+ 
+var toAdd = document.createDocumentFragment();
+
+
+for(var i = 0; i < Num_slides; i++){
+	for(var j = 0; j < each_slide_length; j++){
+    var newDiv = document.createElement('div');
+    newDiv.className = 'mySlides fade';
+	newDiv.id = "main" + (3 * i + j);
+    toAdd.appendChild(newDiv);
+	}
+}
+
+document.body.appendChild(toAdd);
+console.log("To add finished")
+
+for(var i = 0; i < Num_slides; i++){	
+	for(var j = 0; j < each_slide_length; j++){
+	var align = "center";
+	console.log("New Slide Created")
+	slide = document.createElement("div");
+	slide.id = "slide" + (3 * i + j);
+	console.log(slide.id)
+	slide.align = align;
+	document.getElementById("main" + (3 * i + j)).appendChild(slide);
+	scatter = document.createElement("div");
+	scatter.id = "slidetext" + (3* i + j);
+	scatter.align = align;
+	document.getElementById("main" + (3* i + j)).appendChild(scatter);
+	}
+} 
+console.log("Slides created")
+
+for(var i = 0; i < Num_slides; i++){	
+	for(var j = 0; j < each_slide_length; j++){
+	var div = document.getElementById("slidetext" + (3 * i + j));
+	console.log("Div Id")	
+	console.log(3 * i + j)
+	console.log(story_json)
+	console.log(j)
+	if (j == 0) {
+		div.innerHTML += story_json[i]['average'];
+		console.log(story_json[i]['average']);
+  	} else if (j == 1) {
+		div.innerHTML += story_json[i]['corr'];
+		console.log(story_json[i]['corr']);
+  	} else {
+		div.innerHTML += story_json[i]['outliers'];
+		console.log(story_json[i]['outliers']);
+  	}
+	}
+}
+console.log("Stories added")
+
+var slideIndex = 0;
+
+function resumeInfinity() {
+    window.speechSynthesis.resume();
+    timeoutResumeInfinity = setTimeout(resumeInfinity, 1000);
+}
+
+console.log("Show slides started")
+function showSlides() {
+  var slides = document.getElementsByClassName("mySlides");
+  for (i = 0; i < slides.length; i++) {
+	  slides[i].style.display = "none";  
+  }
+  slideIndex++;
+	var id = slideIndex - 1;
+	var_item = id % each_slide_length;
+	var_row = Math.floor(id / each_slide_length);
+	var id_n = id.toString();	
+  
+     
+  slides[slideIndex - 1].style.display = "block";  
+  
+  
+  
+  //var x = dict[id];  
+  console.log("Printing Story For Slides")
+  console.log(story_json)
+  console.log(var_row)
+  console.log(var_item)
+  
+  if (var_item == 0) {
+		var x = story_json[var_row]['average'];
+		
+  	} else if (var_item == 1) {
+		var x = story_json[var_row]['corr'];
+		
+  	} else {
+		var x = story_json[var_row]['outliers'];
+		
+  	}
+
+  //var x = story_json[var_row][var_item];
+
+  console.log(x);
+  	  
+  var text = x;
+  var msg = new SpeechSynthesisUtterance();
+  
+   
+  var voices = window.speechSynthesis.getVoices();
+  console.log(voices);
+  msg.voice = voices[3];
+  console.log(msg.voice);
+  if(msg.voice == null)
+  {
+  console.log("yeah, it is null")
+  msg.rate = 1.2;
+  console.log(msg.rate);
+  msg.pitch = 0.9;
+  console.log(msg.pitch);  
+  }
+  else
+  {
+  msg.rate = 1;
+  console.log(msg.rate);
+  msg.pitch = 1;
+  console.log(msg.pitch);
+ 
+  }
+  msg.text = text;
+
+
+	msg.onstart = function(event) {
+		resumeInfinity();
+	};
+
+	msg.onend = function(event) {
+		clearTimeout(timeoutResumeInfinity);
+	};  
+
+  speechSynthesis.speak(msg);
+  
+  if (slideIndex > slides.length) {return;}  
+  
+  setTimeout(showSlides, 10000); // Change image every 2 seconds
+}
+function scatter_new(var11, var21, var31){
+	var var1 = var11
+	var var2 = var21
+	var var3 = var31
+	
+	//set the dimensions and margins of the graph
+	var margin = {top: 30, right: 30, bottom: 70, left: 60},
+		width = 1100 - margin.left - margin.right,
+		height = 600 - margin.top - margin.bottom;
+
+	//append the svg object to the body of the page
+	var svg = d3.select(var3)
+	  .append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+		.attr("transform",
+			  "translate(" + margin.left + "," + margin.top + ")");
+
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr("class", "label_x")
+		.attr("x", width - 450)
+		.attr("y", height + 40)
+		.text(var1);
+
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr("transform", "rotate(-90)")
+		.attr("dy", "-4em")
+		.attr("x",0 - (height / 2) + 30)
+		.text(var2);
+
+
+
+	//Read the data
+	d3.csv("/static/Preprocessed_data.csv", function(data) {
+	  // Add X axis
+	  var x = d3.scaleLinear()
+		.domain([d3.min(data, function(d) { return d[var1]; }),d3.max(data, function(d) { return d[var1]; })])
+		.range([ 0, width ]);
+	  svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x));
+
+	  // Add Y axis
+	  var y = d3.scaleLinear()
+		.domain([d3.min(data, function(d) { return d[var2]; }),d3.max(data, function(d) { return d[var2]; })])
+		.range([ height, 0]);
+	  svg.append("g")
+		.call(d3.axisLeft(y));
+
+	  // Add dots
+	  svg.append('g')
+		.selectAll("dot")
+		.data(data)
+		.enter()
+		.append("circle")
+		  .attr("cx", function (d) { return x(d[var1]); } )
+		  .attr("cy", function (d) { return y(d[var2]); } )
+		  .attr("r", 2.5)
+		  .style("fill", "#69b3a2")
+
+	})
+};
+var count = 0;
+for(var j = 0; j < each_slide_length; j++){	
+	for(var i = 0; i < dict_2.length; i++){	
+		console.log("Haha");
+		console.log(dict_2[i][0],dict_2[i][1]);
+		var slide = "#slide" + count;
+		console.log(slide);
+		console.log(dict_2[i][0],dict_2[i][1],slide)
+		scatter_new(dict_2[i][0], dict_2[i][1], slide);
+		count += 1;
+	} 
+}
+
+$(function(){
+  if ('speechSynthesis' in window) {
+
+    $('#speak').click(function(){
+		//alert("In");
+		showSlides();	
+    })
+  } else {
+    $('#modal1').openModal();
+  }
+});
+ 
+//}
+</script>
+
+
+<div class="container" align = "center">
+  <form class="col s8 offset-s2">
+    <a href="#" align = "center" id="speak" class="waves-effect waves-light btn">Speak</a>
+  </form>  
+</div>
+
+<div id="modal1" class="modal">
+  <h4>Speech Synthesis not supported</h4>
+  <p>Your browser does not support speech synthesis.</p>
+  <p>We recommend you use Google Chrome.</p>
+  <div class="action-bar">
+    <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Close</a>
+  </div>
+</div>
+
+<script>
+
+</script>
+			
+</body>
+</html>

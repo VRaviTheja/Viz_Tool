@@ -1,0 +1,7 @@
+1. https://www.sitepoint.com/a-basic-html5-template/
+2. https://www.tutorialsteacher.com/d3js/loading-data-from-file-in-d3js#d3.csv
+3. https://stackoverflow.com/questions/21006647/cannot-import-data-from-csv-file-in-d3
+4. https://stackoverflow.com/questions/7999971/read-csv-data-with-d3-csv-each-column-in-separate-array
+5. https://blog.risingstack.com/d3-js-tutorial-bar-charts-with-javascript/
+6. https://www.digitalocean.com/community/tutorials/getting-started-with-data-visualization-using-javascript-and-the-d3-library
+7. https://stackoverflow.com/questions/27574743/how-to-get-the-x-position-of-a-bar-on-d3-paired-bar-graph-for-tooltip-update
